@@ -38,6 +38,7 @@ def cityreader(cities_list=None) -> List[City]:
     # `cities` list
     if cities_list is None:
         cities_list = []
+
     with open("cities.csv") as csv_file:
         csv_reader = csv.DictReader(csv_file)
 
@@ -46,12 +47,6 @@ def cityreader(cities_list=None) -> List[City]:
 
     return cities_list
 
-
-cityreader(cities)
-
-# Print the list of cities (name, lat, lon), 1 record per line.
-for c in cities:
-    print(c)
 
 # STRETCH GOAL!
 #
@@ -85,11 +80,51 @@ for c in cities:
 # TODO Get latitude and longitude values from the user
 
 
-def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
+def cityreader_stretch(
+    lat1: float, lon1: float, lat2: float, lon2: float, cities_list=None
+) -> List[City]:
     # within will hold the cities that fall within the specified region
-    within = []
+    if cities_list is None:
+        cities_list = []
+
+    if lat1 < lat2:
+        low_lat = lat1
+        hi_lat = lat2
+    else:
+        low_lat = lat2
+        hi_lat = lat1
+
+    if lon1 < lon2:
+        low_lon = lon1
+        hi_lon = lon2
+    else:
+        low_lon = lon2
+        hi_lon = lon1
+
+    within: List[City] = []
 
     # Go through each city and check to see if it falls within
     # the specified coordinates.
+    for city in cities_list:
+        if low_lat <= city.lat <= hi_lat and low_lon <= city.lon <= hi_lon:
+            within.append(city)
 
     return within
+
+
+if __name__ == "__main__":
+    cityreader(cities)
+
+    # Print the list of cities (name, lat, lon), 1 record per line.
+    for c in cities:
+        print(c)
+
+    point1 = input("Enter lat, lon for first point: ").split(", ")
+    point2 = input("Enter lat, lon for second point: ").split(", ")
+
+    lat_1 = float(point1[0])
+    lon_1 = float(point1[1])
+    lat_2 = float(point2[0])
+    lon_2 = float(point2[1])
+
+    cityreader_stretch(lat_1, lon_1, lat_2, lon_2, cities)
